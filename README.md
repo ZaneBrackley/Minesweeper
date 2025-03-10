@@ -1,2 +1,20 @@
-# Minesweeper
-A coding project for myself, minesweeper in multiple languages
+# Minesweeper Recreation
+
+This repository contains implementations of the classic Minesweeper game in multiple programming languages.
+
+## Languages
+- Python
+- JavaScript
+- Java
+- C++
+- (More to be added)
+
+## Features
+- Classic Minesweeper mechanics
+- Multiple difficulty levels
+
+## Contributions
+Feel free to contribute by adding new language implementations or improving existing ones.
+
+## License
+This project is open-source under the MIT License.
