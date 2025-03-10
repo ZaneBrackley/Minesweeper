@@ -3,11 +3,11 @@
 This repository contains implementations of the classic Minesweeper game in multiple programming languages.
 
 ## Languages
-- Python
 - JavaScript
+- Python
+- C#
 - Java
 - C++
-- (More to be added)
 
 ## Features
 - Classic Minesweeper mechanics
