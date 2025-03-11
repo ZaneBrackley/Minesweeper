@@ -3,7 +3,7 @@
 This repository contains implementations of the classic Minesweeper game in multiple programming languages.
 
 ## Languages
-- JavaScript
+- JavaScript - Browser based game
 - Python
 - C#
 - Java
