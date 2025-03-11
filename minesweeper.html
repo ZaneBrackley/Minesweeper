@@ -5,6 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Minesweeper</title>
     <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #f8f8f8;
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        text-align: center;
+      }
+      .info {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 10px;
+      }
       table {
         border-collapse: collapse;
       }
@@ -63,20 +81,24 @@
     </style>
   </head>
   <body>
-    <h1>Minesweeper</h1>
-    <!-- Restart button -->
-    <button onclick="restartGame()">Restart</button>
-    <!-- Dropdown menu -->
-    <select id="gameOptions" style="margin-left: 20px" onchange="handleDropdownChange()">
-      <option value="easy">Easy (10x10, 15 Mines)</option>
-      <option value="medium">Medium (15x15, 35 Mines)</option>
-      <option value="hard">Hard (22x22, 75 Mines)</option>
-    </select>
-    <div style="display: flex;">
-      <p id="mineCounter">Mines Remaining: 15</p>
-      <p id="timer" style="margin-left: 40px">Time taken: 0 seconds</p>
+    <div class="container">
+      <h1>Minesweeper</h1>
+      <button onclick="restartGame()">Restart</button>
+      <select
+        id="gameOptions"
+        style="margin-left: 20px"
+        onchange="handleDropdownChange()"
+      >
+        <option value="easy">Easy (10x10, 15 Mines)</option>
+        <option value="medium">Medium (15x15, 35 Mines)</option>
+        <option value="hard">Hard (22x22, 75 Mines)</option>
+      </select>
+      <div style="display: flex; justify-content: center;">
+        <p id="mineCounter">Mines Remaining: 15</p>
+        <p id="timer" style="margin-left: 40px">Time taken: 0 seconds</p>
+      </div>
+      <table id="minesweeper"></table>
     </div>
-    <table id="minesweeper"></table>
 
     <script>
       let rows = 10,
@@ -163,7 +185,7 @@
           cell.classList.add("mine", "blown-up");
           cell.state = "blown-up";
           gameOver = true;
-          stopTimer(); // Stop the timer when losing
+          stopTimer();
           revealAllMines();
           setTimeout(() => {
             alert("Game Over!");
@@ -235,7 +257,7 @@
         }
         if (allSafeCellsRevealed) {
           gameOver = true;
-          stopTimer(); // Stop the timer when the player wins
+          stopTimer();
           setTimeout(() => {
             alert(`You Win! It took you ${time} seconds`);
           }, 100);
@@ -254,17 +276,14 @@
         revealCell(r, c);
       }
 
-      // Middle-click logic: Only allowed if number of flags in neighboring cells matches neighboring mines
       function middleClickReveal(r, c, e) {
         e.preventDefault();
         if (gameOver || !board[r][c].revealed) return;
 
-        // Get the number of neighboring mines for the clicked cell
         const neighboringMines = board[r][c].neighboringMines;
 
-        // Count the number of flags in the 8 surrounding cells
         let flagCount = 0;
-        let incorrectFlags = []; // Store coordinates of cells with incorrect flags
+        let incorrectFlags = [];
         for (let dr = -1; dr <= 1; dr++) {
           for (let dc = -1; dc <= 1; dc++) {
             const nr = r + dr,
@@ -280,7 +299,6 @@
           }
         }
 
-        // If the number of flags around the cell equals the neighboring mines, reveal the neighbors
         if (flagCount === neighboringMines) {
           for (let dr = -1; dr <= 1; dr++) {
             for (let dc = -1; dc <= 1; dc++) {
@@ -293,7 +311,6 @@
           }
         }
 
-        // Handle incorrect flags after the reveal
         incorrectFlags.forEach(({ r, c }) => {
           const cell = document.getElementById(`${r}-${c}`);
           cell.classList.add("bad-flag");
