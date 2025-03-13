@@ -4,7 +4,7 @@ This repository contains implementations of some classic games in multiple progr
 
 ## Languages
 - JavaScript - Browser-based Minesweeper game
-- Python
+- Python - Chess app
 - C#
 - Java
 - C++
