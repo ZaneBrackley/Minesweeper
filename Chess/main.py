@@ -57,6 +57,28 @@ class Rook:
     def __init__(self, color, piece_type):
         self.color = color
         self.image = piece_images[f"{color}_{piece_type}"]
+    def valid_move(self, start_row, start_col, end_row, end_col, board):
+        if start_row != end_row and start_col != end_col:
+            return False # This would mean its not a straight line move
+        
+        # Which way is it moving
+        row_step = 0 if start_row == end_row else (1 if end_row > start_row else -1)
+        col_step = 0 if start_col == end_col else (1 if end_col > start_col else -1)
+        
+        # Check the squares in the way, are they blocked?
+        row, col = start_row + row_step, start_col + col_step
+        while (row, col) != (end_row, end_col):
+            if board[row][col] is not None:
+                return False
+            row += row_step
+            col += col_step
+            
+        # Allow the move if the selected square is empty or occupied by opposing piece
+        destination_piece = board[end_row][end_col]
+        if destination_piece is None or destination_piece.color != self.color:
+            return True
+        
+        return False
         
 class Knight:
     def __init__(self, color, piece_type):
@@ -67,16 +89,72 @@ class Bishop:
     def __init__(self, color, piece_type):
         self.color = color
         self.image = piece_images[f"{color}_{piece_type}"]
+    def valid_move(self, start_row, start_col, end_row, end_col, board):
+        if abs(start_row - end_row) == abs(start_col - end_col):
+            row_step = 1 if end_row > start_row else -1
+            col_step = 1 if end_col > start_col else -1
+        else:
+            return False  
+
+        # Move step-by-step and check if the path is blocked
+        row, col = start_row + row_step, start_col + col_step
+        while (row, col) != (end_row, end_col):
+            if not (0 <= row < 8 and 0 <= col < 8):  # Ensure within board
+                return False
+            if board[row][col] is not None:
+                return False
+            row += row_step
+            col += col_step
+
+        # Allow move if destination is empty or an opponent's piece
+        destination_piece = board[end_row][end_col]
+        return destination_piece is None or destination_piece.color != self.color
 
 class Queen:
     def __init__(self, color, piece_type):
         self.color = color
         self.image = piece_images[f"{color}_{piece_type}"]
+    def valid_move(self, start_row, start_col, end_row, end_col, board):
+        # Moving in a straight line like a Rook
+        if start_row == end_row or start_col == end_col:
+            row_step = 0 if start_row == end_row else (1 if end_row > start_row else -1)
+            col_step = 0 if start_col == end_col else (1 if end_col > start_col else -1)
+        
+        # Moving diagonally like a Bishop
+        elif abs(start_row - end_row) == abs(start_col - end_col):
+            row_step = 1 if end_row > start_row else -1
+            col_step = 1 if end_col > start_col else -1
+
+        else:
+            return False  # Not a valid Queen move
+
+        # Move step-by-step and check if the path is blocked
+        row, col = start_row + row_step, start_col + col_step
+        while (row, col) != (end_row, end_col):
+            if not (0 <= row < 8 and 0 <= col < 8):  # Ensure within board
+                return False
+            if board[row][col] is not None:
+                return False
+            row += row_step
+            col += col_step
+
+        # Allow move if destination is empty or an opponent's piece
+        destination_piece = board[end_row][end_col]
+        return destination_piece is None or destination_piece.color != self.color
 
 class King:
     def __init__(self, color, piece_type):
         self.color = color
         self.image = piece_images[f"{color}_{piece_type}"]
+    def valid_move(self, start_row, start_col, end_row, end_col, board):
+        if abs(end_row - start_row) <= 1 and abs(end_col - start_col) <= 1:
+            
+            # Check if destination is empty or occupied by an opponent
+            destination_piece = board[end_row][end_col]
+            if destination_piece is None or destination_piece.color != self.color:
+                return True
+        
+        return False  # Move is invalid
 
 # Initialize board
 def setup_board():
