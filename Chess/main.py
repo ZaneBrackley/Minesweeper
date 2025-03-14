@@ -116,12 +116,17 @@ white_lost_pieces = []
 black_lost_pieces = []
 
 # Draw the board with margins
-def draw_board():
+def draw_board(highlighted_squares=[]):
     board_x_offset = MARGIN  # Offset to center board properly
     for row in range(8):
         for col in range(8):
             color = WHITE if (row + col) % 2 == 0 else BROWN
             pygame.draw.rect(screen, color, (col * SQUARE_SIZE + MARGIN, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+            
+            if (row, col) in highlighted_squares:
+                overlay = pygame.Surface((SQUARE_SIZE, SQUARE_SIZE), pygame.SRCALPHA)
+                overlay.fill((100, 249, 83, 100))
+                screen.blit(overlay, (col * SQUARE_SIZE + MARGIN, row * SQUARE_SIZE))
             
     line_color = BLACK
     pygame.draw.line(screen, line_color, (MARGIN, 0), (MARGIN, HEIGHT), 2)  
@@ -169,11 +174,13 @@ def handle_move(start_row, start_col, end_row, end_col):
 def main():
     load_images()
     selected_piece = None
+    highlighted_squares = []
+    turn = "white"
     running = True
 
     while running:
         screen.fill((255, 255, 255))
-        draw_board()
+        draw_board(highlighted_squares)
         draw_pieces()
         draw_lost_pieces()
 
@@ -188,13 +195,22 @@ def main():
 
                 if 0 <= row < 8 and 0 <= col < 8:
                     if selected_piece is None:
-                        if board[row][col]:
+                        if board[row][col] and board[row][col].color == turn:
                             selected_piece = (row, col)
+                            piece = board[row][col]
+                            
+                            highlighted_squares = [
+                                (r, c) for r in range(8) for c in range (8)
+                                if piece.valid_move(row, col, r, c, board)
+                            ]
                     else:
                         if handle_move(selected_piece[0], selected_piece[1], row, col):
+                            turn = "black" if turn == "white" else "white"
                             selected_piece = None
                         else:
                             selected_piece = None
+                            
+                        highlighted_squares = []
 
         pygame.display.update()
     pygame.quit()
